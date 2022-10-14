@@ -1,17 +1,27 @@
 # Return True if the queue is empty
 def isEmpty():    
-    return ______________________
+    if (end == -1) or ((front - end) < 0):
+       return True
+    else:
+       return False
  
 
-# Retutn True if the queue is full
+# Return True if the queue is full
 def isFull():
-    return __________________________
+    if (end - front + 1) == 5:
+       return True
+    else:
+       return False
 
 
 # Function to add an item to end of the queue
 def add(item):
     global queue, front, end           #required in Python if we're modifying a global variable    
-    
+    if isFull():
+      return ("Queue is full")
+    else:
+      queue[front] == item
+      end = end + 1
     
     
   
@@ -19,16 +29,15 @@ def add(item):
 # Function to remove the front item from the queue
 def remove():
     global queue, front, end
-    
-    
-    
-    
-    return ______________
-    
+    front = front + 1
+    if ifEmpty():
+       return ("None")
+    else:
+      return queue[front-1]
     
 # Function to return the number of items in the queue
 def size():
-    return ____________________
+    return (end - front + 1)
 
 
 # Function to return the front item without removing it from the queue

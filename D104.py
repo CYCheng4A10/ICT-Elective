@@ -3,13 +3,17 @@ a, b, c = input().split()
 a = int(a)
 b = int(b)
 c = int(c)
-delta = math.sqrt(b*b-4*a*c)
-rootone = float((-b+delta)/(2*a))
-roottwo = float((-b-delta)/(2*a))
+delta = b*b-4*a*c
 if delta < 0:
     print('None')
-elif rootone == roottwo:
-    print(str(rootone))
 else:
-    print(round(str(rootone), 3), end=" ")
-    print(round(str(roottwo), 3))
+    rootone = (-b+math.sqrt(delta))/(2*a)
+    roottwo = (-b-math.sqrt(delta))/(2*a)
+    if rootone == roottwo:
+        print(f"{roottwo:.3f}")
+    elif rootone > roottwo:
+        print(f"{roottwo:.3f}", end=" ")
+        print(f"{rootone:.3f}")
+    else:
+        print(f"{rootone:.3f}", end=" ")
+        print(f"{roottwo:.3f}")

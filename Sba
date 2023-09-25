@@ -1,0 +1,195 @@
+program StringArrayExample;
+
+
+uses
+  SysUtils;
+
+type
+  TStringArray = array of string;
+
+const
+  Delimiters: TSysCharSet = [' ', ',', '.', ';', ':', '!', '?', '-', '_'];
+
+var
+  unsortedarray, sortedarray: TStringArray;
+  i: Integer;
+  inputStr, word, , preword: string;
+
+
+function LowercaseWords(const passage: string): string;
+var
+  i: Integer;
+  lowercasePassage: string;
+begin
+  lowercasePassage := passage;
+  for i := 1 to Length(lowercasePassage) do
+  begin
+    if lowercasePassage[i] in ['A'..'Z'] then
+      lowercasePassage[i] := Char(Ord(lowercasePassage[i]) + 32);
+  end;
+  Result := lowercasePassage;
+end;
+
+function SplitPassage(const passage: string): TStringArray;
+var
+  lowercasePassage: string;
+  words: TStringArray;
+  word: string;
+  i, startIdx, endIdx: Integer;
+begin
+  lowercasePassage := LowercaseWords(passage);
+
+  SetLength(words, 0);
+
+  startIdx := 1;
+  for i := 1 to Length(lowercasePassage) do
+  begin
+    if CharInSet(lowercasePassage[i], Delimiters) then
+    begin
+      endIdx := i - 1;
+      if endIdx >= startIdx then
+      begin
+        word := Copy(lowercasePassage, startIdx, endIdx - startIdx + 1);
+        SetLength(words, Length(words) + 1);
+        words[High(words)] := word;
+      end;
+      startIdx := i + 1;
+    end;
+  end;
+
+  // Add the last word if not followed by a delimiter
+  if startIdx <= Length(lowercasePassage) then
+  begin
+    word := Copy(lowercasePassage, startIdx, Length(lowercasePassage) - startIdx + 1);
+    SetLength(words, Length(words) + 1);
+    words[High(words)] := word;
+  end;
+
+  Result := words;
+end;
+
+function MergeSort(arr: TStringArray): TStringArray;
+
+  function Merge(left, right: TStringArray): TStringArray;
+  var
+    mergedResult: TStringArray;
+    i, j, k: Integer;
+  begin
+    SetLength(mergedResult, Length(left) + Length(right));
+
+    i := 0; // index for left array
+    j := 0; // index for right array
+    k := 0; // index for merged result array
+
+    while (i < Length(left)) and (j < Length(right)) do
+    begin
+      if left[i] < right[j] then
+      begin
+        mergedResult[k] := left[i];
+        Inc(i);
+      end
+      else
+      begin
+        mergedResult[k] := right[j];
+        Inc(j);
+      end;
+      Inc(k);
+    end;
+
+    while i < Length(left) do
+    begin
+      mergedResult[k] := left[i];
+      Inc(i);
+      Inc(k);
+    end;
+
+    while j < Length(right) do
+    begin
+      mergedResult[k] := right[j];
+      Inc(j);
+      Inc(k);
+    end;
+
+    Merge := mergedResult;
+  end;
+
+var
+  left, right: TStringArray;
+  middle, j: Integer;
+begin
+  if Length(arr) <= 1 then
+  begin
+    MergeSort := arr;
+    Exit;
+  end;
+
+  middle := Length(arr) div 2;
+  SetLength(left, middle);
+  SetLength(right, Length(arr) - middle);
+
+  for j := 0 to middle - 1 do
+    left[j] := arr[j];
+
+  for j := middle to Length(arr) - 1 do
+    right[j - middle] := arr[j];
+
+  left := MergeSort(left);
+  right := MergeSort(right);
+
+  MergeSort := Merge(left, right);
+end;
+
+function SearchInDictionary(arr: TStringArray; target:string; low, high: integer): Boolean;
+  var
+    mid: integer;
+  begin
+    while low <= high do
+    begin
+      mid := (low + high) div 2;
+
+      if arr[mid] = target then
+      begin
+        SearchInDictionary := True;
+        Exit;
+      end
+      else if arr[mid] < target then
+        low := mid + 1
+      else
+        high := mid - 1;
+    end;
+
+    SearchInDictionary := False;
+  end;
+
+function LetterToNumber(const letter: Char): Integer;
+begin
+  LetterToNumber := Ord(LowerCase(letter)) - Ord('a') + 1;
+end;
+
+begin
+  //let user input passage
+  writeln('Input a sentence: ');
+  readln(inputStr);
+  unsortedarray := SplitPassage(inputStr);
+  //sort the array
+  sortedarray := MergeSort(unsortedarray);
+  // Print the elements of the array
+  for i := 0 to Length(sortedarray) - 1 do
+    WriteLn(sortedarray[i]);
+  readln;
+/////////
+  assign(fp, 'dictionary.txt');  //fp pointing to the text file
+  reset(fp);   //move the the beginning of the file for reading
+  preword := ''
+  for word in sortedarray do
+  begin
+    if preword <> word then
+      begin
+        firstchar := LetterToNumber(sortedarray[i][1]);
+        for
+        if SearchInDictionary(dictionary, word, low(dictionary), high(dictionary)) = True then
+        preword :=word
+      end;
+  end;
+  close(fp)
+end.          

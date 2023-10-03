@@ -1,19 +1,20 @@
-program StringArrayExample;
-
+program WrongWordSearch;
 
 uses
   SysUtils;
 
 type
   TStringArray = array of string;
-
+  my_array_type = array[0..2599] of string[50]; //the array size should be same as the dictionary
 const
   Delimiters: TSysCharSet = [' ', ',', '.', ';', ':', '!', '?', '-', '_'];
 
 var
+  fp:textfile;
   unsortedarray, sortedarray: TStringArray;
-  i: Integer;
-  inputStr, word, , preword: string;
+  dictionary: my_array_type;
+  i, firstchar: Integer;
+  inputStr, lowcaseinput, word, preword: string;
 
 
 function LowercaseWords(const passage: string): string;
@@ -37,19 +38,17 @@ var
   word: string;
   i, startIdx, endIdx: Integer;
 begin
-  lowercasePassage := LowercaseWords(passage);
-
   SetLength(words, 0);
 
   startIdx := 1;
-  for i := 1 to Length(lowercasePassage) do
+  for i := 1 to Length(passage) do
   begin
-    if CharInSet(lowercasePassage[i], Delimiters) then
+    if CharInSet(passage[i], Delimiters) then //check if the character is delimiters
     begin
       endIdx := i - 1;
       if endIdx >= startIdx then
       begin
-        word := Copy(lowercasePassage, startIdx, endIdx - startIdx + 1);
+        word := Copy(passage, startIdx, endIdx - startIdx + 1); //put the word into array
         SetLength(words, Length(words) + 1);
         words[High(words)] := word;
       end;
@@ -139,7 +138,7 @@ begin
   MergeSort := Merge(left, right);
 end;
 
-function SearchInDictionary(arr: TStringArray; target:string; low, high: integer): Boolean;
+function SearchInDictionary(arr: my_array_type; target:string; low, high: integer): Boolean;
   var
     mid: integer;
   begin
@@ -170,26 +169,35 @@ begin
   //let user input passage
   writeln('Input a sentence: ');
   readln(inputStr);
-  unsortedarray := SplitPassage(inputStr);
+  //convert the words into low case
+  lowcaseinput := LowercaseWords(inputStr);
+  //put every words into array
+  unsortedarray := SplitPassage(lowcaseinput);
   //sort the array
   sortedarray := MergeSort(unsortedarray);
-  // Print the elements of the array
-  for i := 0 to Length(sortedarray) - 1 do
-    WriteLn(sortedarray[i]);
-  readln;
-/////////
+  //create a dictionary
   assign(fp, 'dictionary.txt');  //fp pointing to the text file
   reset(fp);   //move the the beginning of the file for reading
-  preword := ''
+  i := 0;
+  while not EOF(fp) do //while not end of file
+  begin
+    readln(fp, dictionary[i]);  //read each line into arr[i]
+    i := i+1;
+  end;
+  close(fp);
+  //find the word in the dictionary
+  preword := '';
   for word in sortedarray do
   begin
     if preword <> word then
       begin
-        firstchar := LetterToNumber(sortedarray[i][1]);
-        for
-        if SearchInDictionary(dictionary, word, low(dictionary), high(dictionary)) = True then
-        preword :=word
+        firstchar := LetterToNumber(word[1]);
+        if SearchInDictionary(dictionary, word, firstchar - 1 , firstchar*100 - 1) = False then
+        begin
+             writeln(word);
+        end;
+        preword := word
       end;
   end;
-  close(fp)
-end.          
+  readln;
+end.

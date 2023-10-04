@@ -1,15 +1,11 @@
-program readability_score;
+program ICTsba6A102;
 
 uses SysUtils;
 
-const
-  PunctuationChars: set of Char = ['.', ',', '!', '?', '"', '''', '(', ')'];
-
 var
-  inputStr, word: string;
+  inputStr: string;
   score : real;
   sentences, words, chars, i : integer;
-  result:set of char;
 begin
   writeln('Input a sentence: ');
   readln(inputStr);
@@ -27,4 +23,4 @@ begin
   score := 4.71*(chars/words) + 0.5*(words/sentences) - 21.43;
   writeln('Your readbility score: ', round(score));
   readln;
-end.                           
+end.

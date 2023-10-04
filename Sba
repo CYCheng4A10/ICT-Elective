@@ -1,4 +1,4 @@
-program WrongWordSearch;
+program ICTsba6A10;
 
 uses
   SysUtils;
@@ -33,7 +33,6 @@ end;
 
 function SplitPassage(const passage: string): TStringArray;
 var
-  lowercasePassage: string;
   words: TStringArray;
   word: string;
   i, startIdx, endIdx: Integer;

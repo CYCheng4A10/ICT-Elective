@@ -55,16 +55,7 @@ begin
       startIdx := i + 1;
     end;
   end;
-
-  // Add the last word if not followed by a delimiter
-  if startIdx <= Length(lowercasePassage) then
-  begin
-    word := Copy(lowercasePassage, startIdx, Length(lowercasePassage) - startIdx + 1);
-    SetLength(words, Length(words) + 1);
-    words[High(words)] := word;
-  end;
-
-  Result := words;
+  Result := words; //return the words
 end;
 
 function MergeSort(arr: TStringArray): TStringArray;
@@ -185,6 +176,7 @@ begin
     i := i+1;
   end;
   close(fp);
+  writeln('Wrong Words: ');
   //find the word in the dictionary
   preword := '';
   for word in sortedarray do
@@ -192,9 +184,9 @@ begin
     if preword <> word then
       begin
         firstchar := LetterToNumber(word[1]);
-        if SearchInDictionary(dictionary, word, firstchar - 1 , firstchar*100 - 1) = False then
+        if SearchInDictionary(dictionary, word, firstchar - 1 , firstchar*100 - 1) = False then //if cannot find the word in the dictionary
         begin
-             writeln(word);
+             writeln(word); //write the wrong word
         end;
         preword := word
       end;

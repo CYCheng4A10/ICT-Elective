@@ -12,6 +12,7 @@ const
 var
   fp:textfile;
   unsortedarray, sortedarray: TStringArray;
+  words:array[0..10000] of string[50];
   dictionary: my_array_type;
   i, firstchar: Integer;
   inputStr, lowcaseinput, word, preword: string;
@@ -157,8 +158,20 @@ end;
 
 begin
   //let user input passage
-  writeln('Input a sentence: ');
-  readln(inputStr);
+  assign(fp, 'inputtxt.txt');  //fp pointing to the text file
+  reset(fp);   //move the the beginning of the file for reading
+  i := 0;
+  while not EOF(fp) do //while not end of file
+  begin
+    readln(fp, words[i]);  //read each line into arr[i]
+    i := i+1;
+  end;
+  close(fp);
+  inputStr := '' ;
+  for i:= 0 to high(words) do
+  begin
+    inputStr := inputStr + words[i];
+  end;
   //convert the words into low case
   lowcaseinput := LowercaseWords(inputStr);
   //put every words into array
